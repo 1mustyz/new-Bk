@@ -1,4 +1,4 @@
-const {Reservation} = require('../models');
+const {Reservation,User,Train} = require('../models');
 const {randomNumber} = require('../middlewares/math.middleware');
 
 const create = async (req,res,next) => {
@@ -36,13 +36,56 @@ const findAllSingleUser = async (req,res,next) => {
 }
 
 
-const findOne = async (req,res,next) => {
-    const result = await Reservation.findOne({where: {id: req.query.id}});
+const findOneAdmin = async (req,res,next) => {
+    const result = await Reservation.findOne({
+        where: {
+            reservationId: req.query.reserveId
+            // id: req.query.userId,
+            },
+            attributes: ['reservationId','seatNo','paidReservation','paymentCode'],
+
+            include: [{
+                model: User
+            },{model: Train}]  
+        });
 
     result.length == 0 
         ? res.json({'msg':'no reservation yet'})
         : res.json(result);
 }
+
+const findOneUser = async (req,res,next) => {
+    const result = await Reservation.findOne({
+            where: {
+                reservationId: req.query.reserveId
+                // id: req.query.userId
+                },
+            attributes: ['seatNo','paidReservation'],
+            include: [{
+                model: User
+            },{model: Train}]   
+        });
+
+    result.length == 0 
+        ? res.json({'msg':'no reservation yet'})
+        : res.json(result);
+}
+
+const confirmPayment = async (req,res,next) => {
+    const result = await Reservation.findOne({
+        where:{reservationId: req.query.reserveId}
+    });
+
+    result.length == 0 
+        ? res.json({'msg':'no reservation yet'})
+        : req.body.paymentCode == result.paymentCode
+            ? await Reservation.update({paidReservation: true},{where: {reservationId: req.query.reserveId}})
+                ? res.json({'msg': 'you have paid for reservation'})
+                : ''
+            : ''
+}
+
+
 
 const update = async (req,res,next) => {
     let data = {
@@ -67,6 +110,8 @@ module.exports = {
     create,
     update,
     remove,
-    findOne,
-    findAllSingleUser
+    findOneAdmin,
+    findOneUser,
+    findAllSingleUser,
+    confirmPayment
 }

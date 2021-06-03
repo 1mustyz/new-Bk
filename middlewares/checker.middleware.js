@@ -1,4 +1,3 @@
-// const { Profile, User, Logout, Forget } = require('../models');
 const {User} = require('../models');
 
 // const userChecker = async (req,res,next) => {

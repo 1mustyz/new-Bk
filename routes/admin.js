@@ -12,6 +12,6 @@ router.delete('/delete_train', trainController.remove);
 
 router.get('/all_reservations', reservationController.findAll);
 router.get('/single_user_all_reservation', reservationController.findAllSingleUser);
-router.get('/single_user_reservation', reservationController.findOne);
+router.get('/single_user_reservation', reservationController.findOneAdmin);
 
 module.exports = router;

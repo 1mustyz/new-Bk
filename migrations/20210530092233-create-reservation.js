@@ -38,6 +38,9 @@ module.exports = {
       paidReservation: {
         type: Sequelize.BOOLEAN
       },
+      expire: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

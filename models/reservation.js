@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Reservation.associate = models => {
-    Reservation.belongsTo(models.Train,{
-      foreignKey: "trainId"
-    });
     Reservation.belongsTo(models.User, {
       foreignKey: "userId"
+    });
+    Reservation.belongsTo(models.Train,{
+      foreignKey: "trainId"
     });
   
     }
@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     trainId: DataTypes.STRING,
     seatNo: DataTypes.STRING,
     paymentCode: DataTypes.STRING,
-    paidReservation: DataTypes.BOOLEAN
+    paidReservation: DataTypes.BOOLEAN,
+    expire: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Reservation',

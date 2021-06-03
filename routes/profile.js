@@ -3,6 +3,7 @@ var router = express.Router();
 
 const userController = require('../controller/user.controller');
 const reservationController = require('../controller/reservation.controller');
+const expiresMiddleware = require('../middlewares/expires.middleware');
 
 router.put('/update', userController.update);
 router.delete('/delete', userController.remove);
@@ -13,6 +14,8 @@ router.delete('/cancel_reservation', reservationController.remove);
 
 
 router.get('/all_single_reservation', reservationController.findAllSingleUser);
-router.get('/one_reservation', reservationController.findOne);
+router.get('/one_reservation', expiresMiddleware.reservationExpires, reservationController.findOneUser);
+
+router.get('/confirm_payment', reservationController.confirmPayment);
 
 module.exports = router;
