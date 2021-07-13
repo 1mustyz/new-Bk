@@ -19,7 +19,13 @@ const findAll = async (req,res,next) => {
 }
 
 const findOne = async (req,res,next) => {
-    const result = await Train.findOne({where: {id: req.query.id, isActive: true}});
+    const result = await Train.findOne({
+        where: {
+            destination: req.query.destination, 
+            dayOfTakeOff: req.query.dayOfTakeOff,
+            isActive: true
+            }
+    });
 
     result.length == 0 
         ? res.json({'msg':'no train added yet'})
