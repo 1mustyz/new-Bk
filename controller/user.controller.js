@@ -44,9 +44,19 @@ const remove = async (req,res,next) => {
         : res.json({'msg':'fail to delete account'});  
 }
 
+const login = async (req,res,next) => {
+    const result = await User.findOne({where: {email: req.body.email}})
+    result
+        ? result.password == req.body.password
+            ? res.json({result})
+            : res.json({msg: 'wrong password'})
+        : res.json({result})    
+}
+
 module.exports = {
     findAll,
     create,
     update,
-    remove
+    remove,
+    login
 }

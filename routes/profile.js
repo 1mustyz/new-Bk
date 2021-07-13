@@ -9,13 +9,13 @@ router.put('/update', userController.update);
 router.delete('/delete', userController.remove);
 
 router.post('/create_reservation', reservationController.create);
-router.put('/update_reservation', reservationController.update);
+router.put('/update_reservation', expiresMiddleware.reservationExpires, reservationController.update);
 router.delete('/cancel_reservation', reservationController.remove);
 
 
 router.get('/all_single_reservation', reservationController.findAllSingleUser);
 router.get('/one_reservation', expiresMiddleware.reservationExpires, reservationController.findOneUser);
 
-router.get('/confirm_payment', reservationController.confirmPayment);
+router.get('/confirm_payment', expiresMiddleware.reservationExpires, reservationController.confirmPayment);
 
 module.exports = router;

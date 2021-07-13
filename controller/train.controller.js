@@ -3,7 +3,8 @@ const {Train} = require('../models');
 const create = async (req,res,next) => {
     
     let data = req.body;
-    
+    data.isActive = true;
+
     await Train.create(data);
     return res.json({'msg':'a new train has been added successfully'});    
 }
@@ -18,7 +19,7 @@ const findAll = async (req,res,next) => {
 }
 
 const findOne = async (req,res,next) => {
-    const result = await Train.findOne({where: {id: req.query.id}});
+    const result = await Train.findOne({where: {id: req.query.id, isActive: true}});
 
     result.length == 0 
         ? res.json({'msg':'no train added yet'})
@@ -32,6 +33,7 @@ const update = async (req,res,next) => {
         dayOfTakeOff: req.body.dayOfTakeOff,
         timeOfTakeOff: req.body.timeOfTakeOff,
         price: req.body.price,
+        isActive: req.body.isActive
     };
     const result = await Train.update(data, {where: {id: req.query.id}});
     console.log(result)

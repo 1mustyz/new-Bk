@@ -10,7 +10,8 @@ const create = async (req,res,next) => {
         trainId: req.query.trainId,
         seatNo: req.body.seatNo,
         paymentCode: randomNumber(),
-        paidReservation: false
+        paidReservation: false,
+        expire: false
 
     }
     
@@ -28,7 +29,7 @@ const findAll = async (req,res,next) => {
 }
 
 const findAllSingleUser = async (req,res,next) => {
-    const result = await Reservation.findAll({where: {userId : req.query.userId}});
+    const result = await Reservation.findAll({where: {userId : req.query.userId, expire: false}});
 
     result.length == 0 
         ? res.json({'msg':'no reservation yet'})
@@ -57,8 +58,8 @@ const findOneAdmin = async (req,res,next) => {
 const findOneUser = async (req,res,next) => {
     const result = await Reservation.findOne({
             where: {
-                reservationId: req.query.reserveId
-                // id: req.query.userId
+                reservationId: req.query.reserveId,
+                expire: false
                 },
             attributes: ['seatNo','paidReservation'],
             include: [{
@@ -73,13 +74,13 @@ const findOneUser = async (req,res,next) => {
 
 const confirmPayment = async (req,res,next) => {
     const result = await Reservation.findOne({
-        where:{reservationId: req.query.reserveId}
+        where:{reservationId: req.query.reserveId, expire: false}
     });
 
     result.length == 0 
         ? res.json({'msg':'no reservation yet'})
         : req.body.paymentCode == result.paymentCode
-            ? await Reservation.update({paidReservation: true},{where: {reservationId: req.query.reserveId}})
+            ? await Reservation.update({paidReservation: true},{where: {reservationId: req.query.reserveId,expire: false}})
                 ? res.json({'msg': 'you have paid for reservation'})
                 : ''
             : ''
@@ -89,17 +90,18 @@ const confirmPayment = async (req,res,next) => {
 
 const update = async (req,res,next) => {
     let data = {
-        paidReservation: req.body.paidReservation
+        trainId: req.query.trainId,
+        seatNo: req.body.seatNo
     };
-    const result = await Reservation.update(data, {where: {id: req.query.id}});
+    const result = await Reservation.update(data, {where: {reservationId: req.query.reserveId}});
     console.log(result)
     result.length == 1 
-        ? res.json({'msg':'you have paid for your reservation successfully'}) 
-        : res.json({'msg':'fail to accept payment'});
+        ? res.json({'msg':'you have updated your reservation successfully'}) 
+        : res.json({'msg':'fail to update reservation'});
 }
 
 const remove = async (req,res,next) => {
-    const result = await Reservation.destroy({where:{id: req.query.id}});
+    const result = await Reservation.destroy({where:{reservationId: req.query.reserveId}});
     result 
         ? res.json({'msg':'Train delete'}) 
         : res.json({'msg':'fail to delete Train'});  
